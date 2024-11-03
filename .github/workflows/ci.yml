@@ -1,0 +1,41 @@
+---
+name: CI
+on: workflow_dispatch
+
+jobs:
+  Build-in-Matrix:
+    strategy:
+      matrix:
+        os: [ 'ubuntu-20.04', 'windows-2022' ]
+    runs-on: ${{ matrix.os }}
+    name: Build on ${{ matrix.os }}
+    steps:
+      - name: Clone
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          show-progress: false
+      - name: CMake (Linux)
+        if: ${{ success() && matrix.os == 'ubuntu-20.04' }}
+        run: |
+          cmake --preset=vcpkg -DCMAKE_BUILD_TYPE=Release
+          cmake --build build -DCMAKE_BUILD_TYPE=Release
+          ./build/ZstdCMake
+      - name: CMake (Windows)
+        if: ${{ success() && matrix.os == 'windows-2022' }}
+        run: |
+          cmake --preset=vcpkg -DCMAKE_BUILD_TYPE=Release
+          cmake --build build -DCMAKE_BUILD_TYPE=Release
+          ./build/ZstdCMake.exe
+      - name: Upload (Ubuntu)
+        if: ${{ success() && matrix.os == 'ubuntu-20.04' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-libs-ubuntu
+          path: 'build/**/*.so*'
+      - name: Upload (Windows)
+        if: ${{ success() && matrix.os == 'windows-2022' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-libs-windows
+          path: 'build/**/*.dll'
