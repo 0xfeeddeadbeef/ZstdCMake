@@ -28,15 +28,11 @@ jobs:
             --preset=vcpkg
           options: |
             CMAKE_BUILD_TYPE=Release
+            CMAKE_MAKE_PROGRAM=ninja
       - name: Run (Linux)
         if: ${{ success() && matrix.os == 'ubuntu-20.04' }}
         run: |
           ./build/ZstdCMake
-      - name: 'Setup Visual C++'
-        if: ${{ success() && matrix.os == 'windows-2022' }}
-        uses: TheMrMilchmann/setup-msvc-dev@v3
-        with:
-          arch: x64
       - name: CMake (Windows)
         if: ${{ success() && matrix.os == 'windows-2022' }}
         uses: threeal/cmake-action@v2
@@ -48,6 +44,7 @@ jobs:
             --preset=vcpkg
           options: |
             CMAKE_BUILD_TYPE=Release
+            CMAKE_MAKE_PROGRAM=ninja
       - name: Run (Windows)
         if: ${{ success() && matrix.os == 'windows-2022' }}
         run: |
