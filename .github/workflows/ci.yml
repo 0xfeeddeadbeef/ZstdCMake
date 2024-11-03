@@ -5,6 +5,7 @@ on: workflow_dispatch
 jobs:
   Build-in-Matrix:
     strategy:
+      fail-fast: true
       matrix:
         os: [ 'ubuntu-20.04', 'windows-2022' ]
     runs-on: ${{ matrix.os }}
@@ -17,8 +18,12 @@ jobs:
           show-progress: false
       - name: Setup Ninja
         uses: seanmiddleditch/gha-setup-ninja@v5
-      - name: Set VCPKG_ROOT
+      - name: Set VCPKG_ROOT (Linux)
+        if: ${{ success() && matrix.os == 'ubuntu-20.04' }}
         run: echo "VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT" >> "$GITHUB_ENV"
+      - name: Set VCPKG_ROOT (Windows)
+        if: ${{ success() && matrix.os == 'windows-2022' }}
+        run: echo "VCPKG_ROOT=$($env:VCPKG_INSTALLATION_ROOT)" >> "$($env:GITHUB_ENV)"
       - name: CMake (Linux)
         if: ${{ success() && matrix.os == 'ubuntu-20.04' }}
         uses: threeal/cmake-action@v2
