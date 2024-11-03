@@ -18,32 +18,11 @@ jobs:
           show-progress: false
       - name: Setup Ninja
         uses: seanmiddleditch/gha-setup-ninja@v5
-      - name: Set VCPKG_ROOT (Linux)
-        if: ${{ success() && matrix.os == 'ubuntu-20.04' }}
-        run: |
-          echo "VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT" >> "$GITHUB_ENV"
-          echo "VCPKG_LIBRARY_LINKAGE=dynamic" >> "$GITHUB_ENV"
       - name: Set VCPKG_ROOT (Windows)
         if: ${{ success() && matrix.os == 'windows-2022' }}
         run: |
           echo "VCPKG_ROOT=$($env:VCPKG_INSTALLATION_ROOT)" >> "$($env:GITHUB_ENV)"
           echo "VCPKG_LIBRARY_LINKAGE=dynamic" >> "$($env:GITHUB_ENV)"
-      - name: CMake (Linux)
-        if: ${{ success() && matrix.os == 'ubuntu-20.04' }}
-        uses: threeal/cmake-action@v2
-        with:
-          generator: Ninja
-          c-compiler: gcc
-          cxx-compiler: g++
-          args: |
-            --preset=vcpkg
-          options: |
-            CMAKE_BUILD_TYPE=Release
-            CMAKE_MAKE_PROGRAM=ninja
-      - name: Run (Linux)
-        if: ${{ success() && matrix.os == 'ubuntu-20.04' }}
-        run: |
-          ./build/ZstdCMake
       - name: CMake (Windows)
         if: ${{ success() && matrix.os == 'windows-2022' }}
         uses: threeal/cmake-action@v2
@@ -60,15 +39,9 @@ jobs:
         if: ${{ success() && matrix.os == 'windows-2022' }}
         run: |
           ./build/ZstdCMake.exe
-      - name: Upload (Ubuntu)
-        if: ${{ success() && matrix.os == 'ubuntu-20.04' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: built-libs-ubuntu
-          path: 'build/**/*.so*'
       - name: Upload (Windows)
         if: ${{ success() && matrix.os == 'windows-2022' }}
         uses: actions/upload-artifact@v4
         with:
           name: built-libs-windows
-          path: 'build/**/*.dll'
+          path: 'build/zstd.dll'
