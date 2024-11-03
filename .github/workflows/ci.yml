@@ -15,17 +15,42 @@ jobs:
         with:
           fetch-depth: 1
           show-progress: false
+      - name: Setup Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v5
       - name: CMake (Linux)
         if: ${{ success() && matrix.os == 'ubuntu-20.04' }}
+        uses: threeal/cmake-action@v2
+        with:
+          generator: Ninja
+          c-compiler: gcc
+          cxx-compiler: g++
+          args: |
+            --preset=vcpkg
+          options: |
+            CMAKE_BUILD_TYPE=Release
+      - name: Run (Linux)
+        if: ${{ success() && matrix.os == 'ubuntu-20.04' }}
         run: |
-          cmake --preset=vcpkg -DCMAKE_BUILD_TYPE=Release
-          cmake --build build -DCMAKE_BUILD_TYPE=Release
           ./build/ZstdCMake
+      - name: 'Setup Visual C++'
+        if: ${{ success() && matrix.os == 'windows-2022' }}
+        uses: TheMrMilchmann/setup-msvc-dev@v3
+        with:
+          arch: x64
       - name: CMake (Windows)
         if: ${{ success() && matrix.os == 'windows-2022' }}
+        uses: threeal/cmake-action@v2
+        with:
+          generator: Ninja
+          c-compiler: cl
+          cxx-compiler: cl
+          args: |
+            --preset=vcpkg
+          options: |
+            CMAKE_BUILD_TYPE=Release
+      - name: Run (Windows)
+        if: ${{ success() && matrix.os == 'windows-2022' }}
         run: |
-          cmake --preset=vcpkg -DCMAKE_BUILD_TYPE=Release
-          cmake --build build -DCMAKE_BUILD_TYPE=Release
           ./build/ZstdCMake.exe
       - name: Upload (Ubuntu)
         if: ${{ success() && matrix.os == 'ubuntu-20.04' }}
