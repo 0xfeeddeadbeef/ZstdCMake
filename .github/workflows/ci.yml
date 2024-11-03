@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ 'ubuntu-20.04', 'windows-2022' ]
+        os: [ 'windows-2022' ]
     runs-on: ${{ matrix.os }}
     name: Build on ${{ matrix.os }}
     steps:
@@ -23,7 +23,7 @@ jobs:
         run: |
           echo "VCPKG_TARGET_ARCHITECTURE=x64" >> "$GITHUB_ENV"
           echo "VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT" >> "$GITHUB_ENV"
-          echo "VCPKG_CRT_LINKAGE=dynamic" >> "$GITHUB_ENV"
+          echo "VCPKG_CRT_LINKAGE=static" >> "$GITHUB_ENV"
           echo "VCPKG_BUILD_TYPE=release" >> "$GITHUB_ENV"
           echo "VCPKG_LIBRARY_LINKAGE=dynamic" >> "$GITHUB_ENV"
           echo "VCPKG_CMAKE_SYSTEM_NAME=Linux" >> "$GITHUB_ENV"
@@ -32,7 +32,7 @@ jobs:
         run: |
           echo "VCPKG_TARGET_ARCHITECTURE=x64" >> "$($env:GITHUB_ENV)"
           echo "VCPKG_ROOT=$($env:VCPKG_INSTALLATION_ROOT)" >> "$($env:GITHUB_ENV)"
-          echo "VCPKG_CRT_LINKAGE=dynamic" >> "$($env:GITHUB_ENV)"
+          echo "VCPKG_CRT_LINKAGE=static" >> "$($env:GITHUB_ENV)"
           echo "VCPKG_BUILD_TYPE=release" >> "$($env:GITHUB_ENV)"
           echo "VCPKG_LIBRARY_LINKAGE=dynamic" >> "$($env:GITHUB_ENV)"
           echo "VCPKG_CMAKE_SYSTEM_NAME=Windows" >> "$($env:GITHUB_ENV)"
