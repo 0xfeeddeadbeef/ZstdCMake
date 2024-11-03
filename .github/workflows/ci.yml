@@ -21,7 +21,7 @@ jobs:
         if: ${{ success() && matrix.os == 'ubuntu-20.04' }}
         uses: threeal/cmake-action@v2
         with:
-          generator: ninja
+          generator: Ninja
           c-compiler: gcc
           cxx-compiler: g++
           args: |
@@ -41,7 +41,7 @@ jobs:
         if: ${{ success() && matrix.os == 'windows-2022' }}
         uses: threeal/cmake-action@v2
         with:
-          generator: ninja
+          generator: Ninja
           c-compiler: cl
           cxx-compiler: cl
           args: |
